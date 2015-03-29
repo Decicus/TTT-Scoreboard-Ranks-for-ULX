@@ -1,0 +1,11 @@
+"AddonInfo"
+{
+    "name"                "TTT Scoreboard Ranks for ULX"
+    "version"            "1.0"
+    "up_date"            "2015-03-29"
+    "author_name"            "Alex Thomassen"
+    "author_email"            "alex@thomassen.xyz"
+    "author_url"            "https://www.thomassen.xyz/"
+    "info"                "Gamemode commands"
+    "override"          "0"
+}
