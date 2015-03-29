@@ -1,8 +1,10 @@
 local TTTSBRanks = {}
+local TTTSBSettings = {}
 
 net.Receive( "ULX_TTTSBRanks", function()
 
     TTTSBRanks = net.ReadTable()
+    TTTSBSettings = net.ReadTable()
 
 end )
 
@@ -18,7 +20,7 @@ end
 
 function TTTSBRanksDisplay( panel )
 
-    panel:AddColumn( "Rank", function( ply, label )
+    panel:AddColumn( TTTSBSettings[ "column_name" ], function( ply, label )
     
         local plyR = TTTSBRanks[ ply:SteamID() ]
             
@@ -35,16 +37,15 @@ function TTTSBRanksDisplay( panel )
             end
                 
             return plyR.text
-                
-                
+            
         else
             
             label:SetTextColor( Color( 255, 255, 255 ) )
-            return "Guest"
+            return TTTSBSettings[ "default_rank" ]
             
         end
         
-    end, 80 )
+    end, TTTSBSettings[ "column_width" ] )
 
 end
 hook.Add( "TTTScoreboardColumns", "TTTSBRanksDisplay", TTTSBRanksDisplay )
