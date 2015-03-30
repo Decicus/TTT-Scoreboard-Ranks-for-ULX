@@ -1,9 +1,10 @@
 -- TTT Scoreboard Ranks for ULX --
 
-local CATEGORY_NAME = "TTT SB Ranks"
+local CATEGORY_NAME = "TTT Scoreboard Ranks"
 local dir = "data/ttt_sb_ranks/"
 local ranks = "ranks.txt"
 local settings = "settings.txt"
+local groups = "groups.txt"
 
 local TTTSBRanks = {}
 local TTTSBSettings = {
@@ -11,23 +12,33 @@ local TTTSBSettings = {
     [ "column_name" ] = "Rank",
     [ "column_width" ] = 80
 }
+local TTTSBGroups = {}
 
-local function TTTSBRanksRefresh()
+local function TTTSBRanksRefresh( ply )
 
     if not ULib.fileExists( dir ) then ULib.fileCreateDir( dir ) end
     if ULib.fileRead( dir .. ranks ) then TTTSBRanks = util.JSONToTable( ULib.fileRead( dir .. ranks ) ) end
     if ULib.fileRead( dir .. settings ) then TTTSBSettings = util.JSONToTable( ULib.fileRead( dir .. settings ) ) end
-    
+    if ULib.fileRead( dir .. groups ) then TTTSBGroups = util.JSONToTable( ULib.fileRead( dir .. groups ) ) end
+
     if SERVER then
-    
+
         net.Start( "ULX_TTTSBRanks" )
-            net.WriteTable( TTTSBRanks )
-            net.WriteTable( TTTSBSettings )
-        net.Broadcast()
+        net.WriteTable( TTTSBRanks )
+        net.WriteTable( TTTSBSettings )
+        net.WriteTable( TTTSBGroups )
+            
+        if ply then
         
+            net.Send( ply )
+            
+        else
+        
+            net.Broadcast()
+            
+        end
+
     end
-    
-    print( "TTT Scoreboard Ranks for ULX successfully refreshed." )
 
 end
 hook.Add( "PlayerInitialSpawn", "ULXTTTRefresh_PlayerJoin", TTTSBRanksRefresh )
@@ -36,14 +47,14 @@ function ulx.addrank( calling_ply, target_ply, rank, red, green, blue )
 
     local sid = target_ply:SteamID()
     local sidRank = { text = rank, color = "colors", r = red, g = green, b = blue }
-    
+
     TTTSBRanksRefresh()
-        
+
     TTTSBRanks[ sid ] = sidRank
-    
+
     ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
     ulx.fancyLogAdmin( calling_ply, "#A set the scoreboard rank of #T to #s with color: #i, #i, #i ", target_ply, rank, red, green, blue )
-    
+
     TTTSBRanksRefresh()
 
 end
@@ -59,12 +70,12 @@ addrank:help( "Adds a custom scoreboard rank with RGB colorcodes." )
 function ulx.rainbowrank( calling_ply, target_ply, rank )
 
     local sid = target_ply:SteamID()
-    
+
     TTTSBRanksRefresh()
-    
+
     TTTSBRanks[ sid ] = { text = rank, color = "rainbow", r = 0, g = 0, b = 0 }
     ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-    
+
     ulx.fancyLogAdmin( calling_ply, "#A set the scoreboard rank of #T to #s with rainbow colors.", target_ply, rank )
     TTTSBRanksRefresh()
 
@@ -78,19 +89,19 @@ rainbowrank:help( "Adds or changes a custom scoreboard rank's color to a rainbow
 function ulx.changerank( calling_ply, target_ply, rank, red, green, blue )
 
     local sid = target_ply:SteamID()
-    
+
     TTTSBRanksRefresh()
-    
+
     if not TTTSBRanks[ sid ] then
-        
+
         ULib.tsayError( calling_ply, "That player does not have an existing rank." )
-        
+
     else
-    
+
         TTTSBRanks[ sid ] = { text = rank, color = "colors", r = red, g = green, b = blue }
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
         ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank of #T to #s with color: #i, #i, #i", target_ply, rank, red, green, blue )
-    
+
     end
     TTTSBRanksRefresh()
 
@@ -105,24 +116,24 @@ changerank:defaultAccess( ULib.ACCESS_ADMIN )
 changerank:help( "Changes an existing scoreboard rank to different text and color." )
 
 function ulx.removerank( calling_ply, target_ply )
-    
+
     local sid = target_ply:SteamID()
-    
+
     TTTSBRanksRefresh()
-    
+
     if not TTTSBRanks[ sid ] then
-        
+
         ULib.tsayError( calling_ply, "That player does not have a rank." )
-        
+
     else
-    
+
         TTTSBRanks[ sid ] = nil
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
         ulx.fancyLogAdmin( calling_ply, "#A removed the scoreboard rank of #T", target_ply )
-    
+
     end
     TTTSBRanksRefresh()
-    
+
 end
 local removerank = ulx.command( CATEGORY_NAME, "ulx removerank", ulx.removerank, "!removerank" )
 removerank:addParam{ type=ULib.cmds.PlayerArg }
@@ -133,19 +144,19 @@ function ulx.columnname( calling_ply, name )
 
     TTTSBRanksRefresh()
     if name ~= "" then
-    
+
         TTTSBSettings[ "column_name" ] = name
         ULib.fileWrite( dir .. settings, util.TableToJSON( TTTSBSettings ) )
         ulx.fancyLogAdmin( calling_ply, true, "#A changed the scoreboard rank column name to \"#s\"", name )
-        
+
     else
-    
+
         ULib.tsayError( calling_ply, "Column name cannot be blank!" )
-    
+
     end
-    
+
     TTTSBRanksRefresh()
-    
+
 end
 local columnname = ulx.command( CATEGORY_NAME, "ulx columnname", ulx.columnname, "!columnname", true )
 columnname:addParam{ type=ULib.cmds.StringArg, hint="Name of column in the scoreboard" }
@@ -155,12 +166,13 @@ columnname:help( "Modifies the name of the column in the scoreboard." )
 function ulx.defaultrank( calling_ply, rank )
 
     TTTSBRanksRefresh()
-    
+
     TTTSBSettings[ "default_rank" ] = rank
     ULib.fileWrite( dir .. settings, util.TableToJSON( TTTSBSettings ) )
     ulx.fancyLogAdmin( calling_ply, true, "#A changed the default rank to \"#s\"", rank )
-    
+
     TTTSBRanksRefresh()
+    
 end
 local defaultrank = ulx.command( CATEGORY_NAME, "ulx defaultrank", ulx.defaultrank, "!defaultrank", true )
 defaultrank:addParam{ type=ULib.cmds.StringArg, hint="Default rank for players without a custom one" }
@@ -171,15 +183,96 @@ defaultrank:help( "Changes the default rank for players without a custom rank." 
 function ulx.columnwidth( calling_ply, width )
 
     TTTSBRanksRefresh()
-    
+
     TTTSBSettings[ "column_width" ] = width
     ULib.fileWrite( dir .. settings, util.TableToJSON( TTTSBSettings ) )
     ulx.fancyLogAdmin( calling_ply, true, "#A changed the column width to #i", width )
-    
+
     TTTSBRanksRefresh()
-    
+
 end
 local columnwidth = ulx.command( CATEGORY_NAME, "ulx columnwidth", ulx.columnwidth, "!columnwidth", true )
 columnwidth:addParam{ type=ULib.cmds.NumArg, min=60, max=240, default=80, hint="Width of the rank column" }
 columnwidth:defaultAccess( ULib.ACCESS_SUPERADMIN )
-columnwidth:help( "Changes the column width in the scoreboard - Default: 80 - Requires mapchange to fully work for everyone." )
+columnwidth:help( "Changes the column width in the scoreboard - Default: 80" )
+
+local groupNames = {}
+local function updateGroups()
+    
+    table.Empty( groupNames )
+    
+    for group, _ in pairs( ULib.ucl.groups ) do
+    
+        if group ~= ULib.ACCESS_ALL then -- "user" would fallback to the default rank.
+        
+            table.insert( groupNames, group )
+            
+        end
+        
+    end
+    
+end
+updateGroups() -- Call when script is loaded.
+hook.Add( ULib.HOOK_UCLCHANGED, "ULX_TTTSBRanks_groupNames", updateGroups )
+
+function ulx.addgrouprank( calling_ply, group_name, rank, red, green, blue )
+
+    TTTSBRanksRefresh()
+
+    TTTSBGroups[ group_name ] = { text = rank, color = "colors", r = red, g = green, b = blue  }
+    ULib.fileWrite( dir .. groups, util.TableToJSON( TTTSBGroups ) )
+    ulx.fancyLogAdmin( calling_ply, "#A added a rank for group #s with rank name #s and colors #i, #i, #i.", group_name, rank, red, green, blue )
+
+    TTTSBRanksRefresh()
+
+end
+local addgrouprank = ulx.command( CATEGORY_NAME, "ulx addgrouprank", ulx.addgrouprank, "!addgrouprank", true )
+addgrouprank:addParam{ type=ULib.cmds.StringArg, completes=groupNames, hint="Group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
+addgrouprank:addParam{ type=ULib.cmds.StringArg, hint="Rank title for group" }
+addgrouprank:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+addgrouprank:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+addgrouprank:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+addgrouprank:defaultAccess( ULib.ACCESS_SUPERADMIN )
+addgrouprank:help( "Add a custom rank per group." )
+
+
+function ulx.removegrouprank( calling_ply, group_name )
+
+    TTTSBRanksRefresh()
+    
+    if not TTTSBGroups[ group_name ] then
+        
+        ULib.tsayError( calling_ply, "That group does not have a rank." )
+        
+    else
+    
+        TTTSBGroups[ group_name ] = nil
+        ULib.fileWrite( dir .. groups, util.TableToJSON( TTTSBGroups ) )
+        ulx.fancyLogAdmin( calling_ply, "#A removed a rank for #s", group_name )
+        
+    end
+
+    TTTSBRanksRefresh()
+
+end
+local removegrouprank = ulx.command( CATEGORY_NAME, "ulx removegrouprank", ulx.removegrouprank, "!removegrouprank", true )
+removegrouprank:addParam{ type=ULib.cmds.StringArg, completes=groupNames, hint="Group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
+removegrouprank:defaultAccess( ULib.ACCESS_SUPERADMIN )
+removegrouprank:help( "Remove a custom rank from a group." )
+
+function ulx.rainbowgrouprank( calling_ply, group_name, rank )
+
+    TTTSBRanksRefresh()
+
+    TTTSBGroups[ group_name ] = { text = rank, color = "rainbow", r = red, g = green, b = blue  }
+    ULib.fileWrite( dir .. groups, util.TableToJSON( TTTSBGroups ) )
+    ulx.fancyLogAdmin( calling_ply, "#A added a rainbow rank for group #s, with the title #s", group_name, rank )
+
+    TTTSBRanksRefresh()
+
+end
+local rainbowgrouprank = ulx.command( CATEGORY_NAME, "ulx rainbowgrouprank", ulx.rainbowgrouprank, "!rainbowgrouprank", true )
+rainbowgrouprank:addParam{ type=ULib.cmds.StringArg, completes=groupNames, hint="Group", error="invalid group \"%s\" specified", ULib.cmds.restrictToCompletes }
+rainbowgrouprank:addParam{ type=ULib.cmds.StringArg, hint="Rank title for group" }
+rainbowgrouprank:defaultAccess( ULib.ACCESS_SUPERADMIN )
+rainbowgrouprank:help( "Sets a group rank to use rainbow colors." )

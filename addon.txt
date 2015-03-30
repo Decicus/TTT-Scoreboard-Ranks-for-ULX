@@ -2,8 +2,8 @@
 {
     "name"                "TTT Scoreboard Ranks for ULX"
     "version"            "1.0"
-    "up_date"            "2015-03-29"
-    "author_name"            "Alex Thomassen"
+    "up_date"            "2015-03-30"
+    "author_name"            "Alex (Decicus) Thomassen"
     "author_email"            "alex@thomassen.xyz"
     "author_url"            "https://www.thomassen.xyz/"
     "info"                "Gamemode commands"

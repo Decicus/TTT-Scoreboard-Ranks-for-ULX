@@ -12,15 +12,17 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 - Changing the default rank.
 - Changing column width.
 - Changing column name.
+- Support for setting group ranks.
   
 ##Planned features:
-- Support for setting group ranks.
+- None as of yet (Suggestions?).
 
 ##Current permissions:
 - Admins:
     - Adding, changing and removing ranks (colors + rainbows).
 - Superadmins:
     - Changing the default rank, column width and column name.
+    - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
   
 ##Requirements:
 - [ULX & ULib](http://ulyssesmod.net/)
