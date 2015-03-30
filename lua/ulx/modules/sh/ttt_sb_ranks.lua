@@ -7,9 +7,9 @@ local settings = "settings.txt"
 
 local TTTSBRanks = {}
 local TTTSBSettings = {
-    "default_rank" = "Guest",
-    "column_name" = "Rank",
-    "column_width" = 80
+    [ "default_rank" ] = "Guest",
+    [ "column_name" ] = "Rank",
+    [ "column_width" ] = 80
 }
 
 local function TTTSBRanksRefresh()
@@ -180,6 +180,6 @@ function ulx.columnwidth( calling_ply, width )
     
 end
 local columnwidth = ulx.command( CATEGORY_NAME, "ulx columnwidth", ulx.columnwidth, "!columnwidth", true )
-columnwidth:addParam{ type=ULib.cmds.NumArg, min=10, max=1000, default=80, hint="Width of the rank column" }
+columnwidth:addParam{ type=ULib.cmds.NumArg, min=60, max=240, default=80, hint="Width of the rank column" }
 columnwidth:defaultAccess( ULib.ACCESS_SUPERADMIN )
-columnwidth:help( "Changes the column width in the scoreboard." )
+columnwidth:help( "Changes the column width in the scoreboard - Default: 80 - Requires mapchange to fully work for everyone." )

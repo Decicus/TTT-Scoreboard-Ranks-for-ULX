@@ -5,6 +5,8 @@ net.Receive( "ULX_TTTSBRanks", function()
 
     TTTSBRanks = net.ReadTable()
     TTTSBSettings = net.ReadTable()
+    gamemode.Call( "ScoreboardCreate" )
+    hook.Call( "ScoreboardHide" )
 
 end )
 
