@@ -27,5 +27,12 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 ##Notes:
 - Custom, per-user ranks will override group ranks.
 
+##Installation:
+- For the latest, stable release; Click ["Releases"](https://github.com/Decicus/TTT-Scoreboard-Ranks-for-ULX/releases) and find the latest available version.
+- Download the zip or tar.gz file and extract it. There should be a folder called "TTT-Scoreboard-Ranks-for-ULX" and inside that should be some files.
+- Put this folder inside your "garrysmod/addons" on the server, either locally or via FTP (depending on how it is hosted).
+    - If you are hosting on Linux, you will most likely have to rename the addon folder to something lowercase (such as "scoreboard_ranks", for example) as uppercase-named addons cause issues with Garry's Mod.
+- Restart the server.
+
 ##Requirements:
 - [ULX & ULib](http://ulyssesmod.net/)
