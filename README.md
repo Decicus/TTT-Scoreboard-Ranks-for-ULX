@@ -13,7 +13,7 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 - Changing column width.
 - Changing column name.
 - Support for setting group ranks.
-  
+
 ##Planned features:
 - None as of yet (Suggestions?).
 
@@ -23,6 +23,9 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 - Superadmins:
     - Changing the default rank, column width and column name.
     - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
-  
+
+##Notes:
+- Custom, per-user ranks will override group ranks.
+
 ##Requirements:
 - [ULX & ULib](http://ulyssesmod.net/)
