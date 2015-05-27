@@ -8,7 +8,6 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 ##Current features:
 - Allows you to add, change existing, remove ranks and customize color.
 - Allows you to add or change an existing rank to use "rainbow" colors. This will gradually change colors.
-- Notifies admins (or groups that inherit from 'admin') about outdated versions.
 - Changing the default rank.
 - Changing column width.
 - Changing column name.
