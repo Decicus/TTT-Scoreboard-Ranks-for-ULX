@@ -41,6 +41,8 @@ local function TTTSBRanksRefresh( ply )
     end
 
 end
+-- Trigger on script-load.
+TTTSBRanksRefresh()
 hook.Add( "PlayerInitialSpawn", "ULXTTTRefresh_PlayerJoin", TTTSBRanksRefresh )
 
 function ulx.addrank( calling_ply, target_ply, rank, red, green, blue )
