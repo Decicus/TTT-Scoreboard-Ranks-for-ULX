@@ -18,10 +18,18 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 
 ##Current permissions:
 - Admins:
-    - Adding, changing and removing ranks (colors + rainbows).
+    - Adding, changing and removing ranks (colors + rainbows) using player names and Steam ID.
 - Superadmins:
     - Changing the default rank, column width and column name.
     - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
+    
+##Changelog:
+- Version 1.1
+    - Added the ability to add, modify, remove and "rainbow" someones rank using their [Steam ID](https://developer.valvesoftware.com/wiki/SteamID#Legacy_Format)
+- Version 1.0
+    - Added the ability to add, modify, remove and "rainbow" someones rank using their player name (has to be connected).
+    - Added the ability to modify the default rank, width of column for ranks and name of said column.
+    - Added the ability to add, modify, remove and "rainbow" ranks for groups.
 
 ##Notes:
 - Custom, per-user ranks will override group ranks.
