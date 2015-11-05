@@ -30,12 +30,18 @@ function TTTSBRanksDisplay( panel )
 
         local plyR = TTTSBRanks[ ply:SteamID() ]
         local groupR = TTTSBGroups[ ply:GetUserGroup() ]
+        local settings = TTTSBSettings
+
 
         if plyR then
 
             if plyR.color == "colors" then
 
-                label:SetTextColor( Color( plyR.r, plyR.g, plyR.b ) )
+                local defColors = settings[ "default_color" ]
+                local red = plyR.r or defColors.r
+                local green = plyR.g or defColors.g
+                local blue = plyR.b or defColors.b
+                label:SetTextColor( Color( red, green, blue ) )
 
             else
 
@@ -56,13 +62,14 @@ function TTTSBRanksDisplay( panel )
                 label:SetTextColor( rainbow() )
 
             end
-            
+
             return groupR.text
 
         else
 
-            label:SetTextColor( Color( 255, 255, 255 ) )
-            return TTTSBSettings[ "default_rank" ]
+            local colors = settings[ "default_color" ]
+            label:SetTextColor( Color( colors.r, colors.g, colors.b ) )
+            return settings[ "default_rank" ]
 
         end
 
