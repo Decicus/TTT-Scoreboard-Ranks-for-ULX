@@ -24,10 +24,8 @@ hook.Add( ulx.HOOK_ULXDONELOADING, "ULX_TTTSBRanks_Placeholders", function()
         -- Make sure <1.2 versions are properly "updated".
         local settings = util.JSONToTable( ULib.fileRead( dir .. settingsFile ) )
         if not settings[ "default_color" ] then
-
             settings[ "default_color" ] = defaultSettings[ "default_color" ]
             ULib.fileWrite( dir .. settingsFile, util.TableToJSON( settings ) )
-
         end
     end
 end )

@@ -3,7 +3,6 @@ local TTTSBSettings = {}
 local TTTSBGroups = {}
 
 net.Receive( "ULX_TTTSBRanks", function()
-
     TTTSBRanks = net.ReadTable()
     TTTSBSettings = net.ReadTable()
     TTTSBGroups = net.ReadTable()
@@ -11,7 +10,6 @@ net.Receive( "ULX_TTTSBRanks", function()
     if not input.IsKeyDown( KEY_TAB ) then
         gamemode.Call( "ScoreboardHide" ) -- Only hide if player isn't using scoreboard.
     end
-
 end )
 
 -- Based on rejax's "TTT Easy Scoreboard": https://github.com/rejax/TTT-EasyScoreboard
@@ -25,55 +23,36 @@ local function rainbow()
 end
 
 function TTTSBRanksDisplay( panel )
-
     panel:AddColumn( TTTSBSettings[ "column_name" ], function( ply, label )
-
         local plyR = TTTSBRanks[ ply:SteamID() ]
         local groupR = TTTSBGroups[ ply:GetUserGroup() ]
         local settings = TTTSBSettings
 
-
         if plyR then
-
             if plyR.color == "colors" then
-
                 local defColors = settings[ "default_color" ]
                 local red = plyR.r or defColors.r
                 local green = plyR.g or defColors.g
                 local blue = plyR.b or defColors.b
                 label:SetTextColor( Color( red, green, blue ) )
-
             else
-
                 label:SetTextColor( rainbow() )
-
             end
 
             return plyR.text
-
         elseif groupR then
-
             if groupR.color == "colors" then
-
                 label:SetTextColor( Color( groupR.r, groupR.g, groupR.b ) )
-
             else
-
                 label:SetTextColor( rainbow() )
-
             end
 
             return groupR.text
-
         else
-
             local colors = settings[ "default_color" ]
             label:SetTextColor( Color( colors.r, colors.g, colors.b ) )
             return settings[ "default_rank" ]
-
         end
-
     end, TTTSBSettings[ "column_width" ] )
-
 end
 hook.Add( "TTTScoreboardColumns", "TTTSBRanksDisplay", TTTSBRanksDisplay )
