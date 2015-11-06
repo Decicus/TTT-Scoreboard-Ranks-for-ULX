@@ -29,7 +29,7 @@ function TTTSBRanksDisplay( panel )
         local settings = TTTSBSettings
 
         if plyR then
-            if plyR.color == "colors" then
+            if plyR.color == "colors" or not plyR.color then -- if plyR.color isn't set, assume to fallback to default.
                 local defColors = settings[ "default_color" ]
                 local red = plyR.r or defColors.r
                 local green = plyR.g or defColors.g
@@ -39,7 +39,7 @@ function TTTSBRanksDisplay( panel )
                 label:SetTextColor( rainbow() )
             end
 
-            return plyR.text
+            return plyR[ "text" ] or settings[ "default_rank" ]
         elseif groupR then
             if groupR.color == "colors" then
                 label:SetTextColor( Color( groupR.r, groupR.g, groupR.b ) )
@@ -47,7 +47,7 @@ function TTTSBRanksDisplay( panel )
                 label:SetTextColor( rainbow() )
             end
 
-            return groupR.text
+            return groupR[ "text" ]
         else
             local colors = settings[ "default_color" ]
             label:SetTextColor( Color( colors.r, colors.g, colors.b ) )

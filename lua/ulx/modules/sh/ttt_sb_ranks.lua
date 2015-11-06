@@ -203,6 +203,44 @@ changerankid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint=
 changerankid:defaultAccess( ULib.ACCESS_ADMIN )
 changerankid:help( "Changes an existing scoreboard rank for a Steam ID to different text and color." )
 
+function ulx.changeranktext( calling_ply, target_ply, rank )
+    TTTSBRanksRefresh()
+
+    local sid = target_ply:SteamID()
+    TTTSBRanks[ sid ].text = rank
+
+    ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+    ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank text of #T to #s", target_ply, rank )
+
+    TTTSBRanksRefresh()
+end
+local changeranktext = ulx.command( CATEGORY_NAME, "ulx changeranktext", ulx.changeranktext, "!changeranktext" )
+changeranktext:addParam( type=ULib.cmds.PlayerArg )
+changeranktext:addParam( type=ULib.cmds.StringArg, hint="New rank of player" )
+changeranktext:defaultAccess( ULib.ACCESS_ADMIN )
+changeranktext:help( "Changes only the scoreboard rank text of a player's rank." )
+
+function ulx.changerankcolor( calling_ply, target_ply, red, green, blue )
+    TTTSBRanksRefresh()
+
+    local sid = target_ply:SteamID()
+    TTTSBRanks[ sid ].r = red
+    TTTSBRanks[ sid ].b = green
+    TTTSBRanks[ sid ].g = blue
+
+    ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+    ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank color of #T to #i, #i, #i.", target_ply, red, green, blue )
+
+    TTTSBRanksRefresh()
+end
+local changerankcolor = ulx.command( CATEGORY_NAME, "ulx changerankcolor", ulx.changerankcolor, "!changerankcolor" )
+changerankcolor:addParam{ type=ULib.cmds.PlayerArg }
+changerankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+changerankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+changerankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+changerankcolor:defaultAccess( ULib.ACCESS_ADMIN )
+changerankcolor:help( "Changes only the scoreboard rank color of a player's rank." )
+
 function ulx.removerank( calling_ply, target_ply )
     local sid = target_ply:SteamID()
 
