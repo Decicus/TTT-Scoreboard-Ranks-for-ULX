@@ -99,6 +99,51 @@ addrankid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Bl
 addrankid:defaultAccess( ULib.ACCESS_ADMIN )
 addrankid:help( "Adds a custom scoreboard rank for a Steam ID with RGB colorcodes." )
 
+function ulx.addranktext( calling_ply, target_ply, rank )
+    local sid = target_ply:SteamID()
+    TTTSBRanksRefresh()
+
+    if TTTSBRanks[ sid ].text then
+        ULib.tsayError( calling_ply, "This player already has a custom rank text." )
+    else
+        TTTSBRanks[ sid ].text = rank
+        ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+        ulx.fancyLogAdmin( calling_ply, "#A added the scoreboard rank text of #T to #s", target_ply, rank )
+    end
+
+    TTTSBRanksRefresh()
+end
+local addranktext = ulx.command( CATEGORY_NAME, "ulx addranktext", ulx.addranktext, "!addranktext" )
+addranktext:addParam{ type=ULib.cmds.PlayerArg, hint="Player to set rank for" }
+addranktext:addParam{ type=ULib.cmds.StringArg, hint="Custom rank text" }
+addranktext:defaultAccess( ULib.ACCESS_ADMIN )
+addranktext:help( "Adds custom rank text for the player, using the default colors." )
+
+function ulx.addrankcolor( calling_ply, target_ply, red, green, blue )
+    TTTSBRanksRefresh()
+
+    local sid = target_ply:SteamID()
+    if TTTSBRanks[ sid ].r then
+        ULib.tsayError( calling_ply, "This player already has a colored rank." )
+    else
+        TTTSBRanks[ sid ].r = red
+        TTTSBRanks[ sid ].b = green
+        TTTSBRanks[ sid ].g = blue
+
+        ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+        ulx.fancyLogAdmin( calling_ply, "#A added the scoreboard rank color for #T to #i, #i, #i.", target_ply, red, green, blue )
+    end
+
+    TTTSBRanksRefresh()
+end
+local addrankcolor = ulx.command( CATEGORY_NAME, "ulx addrankcolor", ulx.addrankcolor, "!addrankcolor" )
+addrankcolor:addParam{ type=ULib.cmds.PlayerArg }
+addrankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+addrankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+addrankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+addrankcolor:defaultAccess( ULib.ACCESS_ADMIN )
+addrankcolor:help( "Changes only the scoreboard rank color of a player's rank." )
+
 function ulx.rainbowrank( calling_ply, target_ply, rank )
     local sid = target_ply:SteamID()
 
@@ -207,10 +252,15 @@ function ulx.changeranktext( calling_ply, target_ply, rank )
     TTTSBRanksRefresh()
 
     local sid = target_ply:SteamID()
-    TTTSBRanks[ sid ].text = rank
+    if not TTTSBRanks[ sid ].text then
+        ULib.tsayError( calling_ply, "This player does not have a custom rank text." )
+    else
+        local oldRank = TTTSBRanks[ sid ].text
+        TTTSBRanks[ sid ].text = rank
 
-    ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-    ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank text of #T to #s", target_ply, rank )
+        ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+        ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank text of #T from #s to #s", target_ply, oldRank, rank )
+    end
 
     TTTSBRanksRefresh()
 end
@@ -224,12 +274,19 @@ function ulx.changerankcolor( calling_ply, target_ply, red, green, blue )
     TTTSBRanksRefresh()
 
     local sid = target_ply:SteamID()
-    TTTSBRanks[ sid ].r = red
-    TTTSBRanks[ sid ].b = green
-    TTTSBRanks[ sid ].g = blue
+    if not TTTSBRanks[ sid ].r then
+        ULib.tsayError( calling_ply, "This player does not have an existing colored rank." )
+    else
+        local oldRed = TTTSBRanks[ sid ].r
+        local oldGreen = TTTSBRanks[ sid ].g
+        local oldBlue = TTTSBRanks[ sid ].b
+        TTTSBRanks[ sid ].r = red
+        TTTSBRanks[ sid ].b = green
+        TTTSBRanks[ sid ].g = blue
 
-    ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-    ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank color of #T to #i, #i, #i.", target_ply, red, green, blue )
+        ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+        ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank color of #T from #i, #i, #i to #i, #i, #i.", target_ply, oldRed, oldGreen, oldBlue, red, green, blue )
+    end
 
     TTTSBRanksRefresh()
 end
