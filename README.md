@@ -24,9 +24,9 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
     - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
 
 ##Changelog:
-- [Version 1.1](releases/tag/1.1)
+- [Version 1.1](/releases/tag/1.1)
     - Added the ability to add, modify, remove and "rainbow" someones rank using their [Steam ID](https://developer.valvesoftware.com/wiki/SteamID#Legacy_Format)
-- [Version 1.0](releases/tag/1.0)
+- [Version 1.0](/releases/tag/1.0)
     - Added the ability to add, modify, remove and "rainbow" someones rank using their player name (has to be connected).
     - Added the ability to modify the default rank, width of column for ranks and name of said column.
     - Added the ability to add, modify, remove and "rainbow" ranks for groups.
@@ -39,7 +39,7 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 - I have had multiple reports that players under "Missing in Action" and "Confirmed dead" suddenly disappear, but I have been unable to reproduce this myself to fix the bug.
     - [Report #1](http://forums.ulyssesmod.net/index.php/topic,8607.msg45526.html#msg45526), [Report #2](http://forums.ulyssesmod.net/index.php/topic,8607.msg46705.html#msg46705)
     - **A temporary fix could be running "ulx refreshranks" manually when this occurs. Although I am unable to confirm whether this works myself.**
-    - If you have any other information regarding this, please contact me either via the ["Issues"](issues) tab or via email: [alex@thomassen.xyz](mailto:alex@thomassen.xyz)
+    - If you have any other information regarding this, please contact me either via the ["Issues"](/issues) tab or via email: [alex@thomassen.xyz](mailto:alex@thomassen.xyz)
 
 ##Installation:
 - For the latest, stable release; Click ["Releases"](https://github.com/Decicus/TTT-Scoreboard-Ranks-for-ULX/releases) and find the latest available version.
