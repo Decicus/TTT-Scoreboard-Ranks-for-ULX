@@ -1,11 +1,13 @@
 local TTTSBRanks = {}
 local TTTSBSettings = {}
 local TTTSBGroups = {}
+local TTTSBNamecolors = {}
 
 net.Receive( "ULX_TTTSBRanks", function()
     TTTSBRanks = net.ReadTable()
     TTTSBSettings = net.ReadTable()
     TTTSBGroups = net.ReadTable()
+    TTTSBNamecolors = net.ReadTable()
     gamemode.Call( "ScoreboardCreate" )
     if not input.IsKeyDown( KEY_TAB ) then
         gamemode.Call( "ScoreboardHide" ) -- Only hide if player isn't using scoreboard.
@@ -56,3 +58,9 @@ function TTTSBRanksDisplay( panel )
     end, TTTSBSettings[ "column_width" ] )
 end
 hook.Add( "TTTScoreboardColumns", "TTTSBRanksDisplay", TTTSBRanksDisplay )
+
+function TTTSBNamecolorsDisplay( ply )
+    local defColors = settings[ "default_namecolor" ]
+    return Color( TTTSBNamecolors[ ply:SteamID() ] ) or Color( defColors.r, defColors.g, defColors.b ) or nil
+end
+hook.Add( "TTTScoreboardColorForPlayer", "TTTSBNamecolorsDisplay", TTTSBNamecolorsDisplay )

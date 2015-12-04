@@ -5,6 +5,7 @@ local dir = "data/ttt_sb_ranks/"
 local ranks = "ranks.txt"
 local settings = "settings.txt"
 local groups = "groups.txt"
+local namecolors = "namecolors.txt"
 
 local TTTSBRanks = {}
 local TTTSBSettings = {
@@ -15,21 +16,29 @@ local TTTSBSettings = {
         [ "r" ] = 255,
         [ "g" ] = 255,
         [ "b" ] = 255
+    },
+    [ "default_namecolor" ] = {
+        [ "r" ] = 255,
+        [ "g" ] = 255,
+        [ "b" ] = 255
     }
 }
 local TTTSBGroups = {}
+local TTTSBNamecolors = {}
 
 local function TTTSBRanksRefresh( ply )
     if not ULib.fileExists( dir ) then ULib.fileCreateDir( dir ) end
     if ULib.fileRead( dir .. ranks ) then TTTSBRanks = util.JSONToTable( ULib.fileRead( dir .. ranks ) ) end
     if ULib.fileRead( dir .. settings ) then TTTSBSettings = util.JSONToTable( ULib.fileRead( dir .. settings ) ) end
     if ULib.fileRead( dir .. groups ) then TTTSBGroups = util.JSONToTable( ULib.fileRead( dir .. groups ) ) end
+    if ULib.fileRead( dir .. namecolors ) then TTTSBNamecolors = util.JSONToTable( ULib.fileRead( dir .. namecolors ) ) end
 
     if SERVER then
         net.Start( "ULX_TTTSBRanks" )
         net.WriteTable( TTTSBRanks )
         net.WriteTable( TTTSBSettings )
         net.WriteTable( TTTSBGroups )
+        net.WriteTable( TTTSBNamecolors )
 
         if ply then
             net.Send( ply )
@@ -476,6 +485,44 @@ rainbowgrouprank:addParam{ type=ULib.cmds.StringArg, completes=groupNames, hint=
 rainbowgrouprank:addParam{ type=ULib.cmds.StringArg, hint="Rank title for group" }
 rainbowgrouprank:defaultAccess( ULib.ACCESS_SUPERADMIN )
 rainbowgrouprank:help( "Sets a group rank to use rainbow colors." )
+
+function ulx.setnamecolor( calling_ply, target_ply, red, green, blue )
+    TTTSBRanksRefresh()
+
+    TTTSBNamecolors[ target_ply:SteamID() ] = { r = red, g = green, b = blue }
+    ULib.fileWrite( dir .. namecolors, util.TableToJSON( TTTSBNamecolors ) )
+    ulx.fancyLogAdmin( calling_ply, "#A set the namecolor of #T to #i, #i, #i", target_ply, red, green, blue )
+
+    TTTSBRanksRefresh()
+end
+local setnamecolor = ulx.command( CATEGORY_NAME, "ulx setnamecolor", ulx.setnamecolor, "!setnamecolor" )
+setnamecolor:addParam{ type=ULib.cmds.PlayerArg, hint="Player to edit namecolor for." }
+setnamecolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+setnamecolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+setnamecolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+setnamecolor:defaultAccess( ULib.ACCESS_ADMIN )
+setnamecolor:help( "Allows you to change the namecolor on the scoreboard for a specific player." )
+
+function ulx.setnamecolorid( calling_ply, sid, red, green, blue )
+    TTTSBRanksRefresh()
+
+    if not ULib.isValidSteamID( sid ) then
+        ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
+    else
+        TTTSBNamecolors[ sid ] = { r = red, g = green, b = blue }
+        ULib.fileWrite( dir .. namecolors, util.TableToJSON( TTTSBNamecolors ) )
+        ulx.fancyLogAdmin( calling_ply, "#A set the namecolor of #T to #i, #i, #i", target_ply, red, green, blue )
+    end
+
+    TTTSBRanksRefresh()
+end
+local setnamecolorid = ulx.command( CATEGORY_NAME, "ulx setnamecolorid", ulx.setnamecolorid, "!setnamecolorid" )
+setnamecolorid:addParam{ type=ULib.cmds.PlayerArg, hint="Player to edit namecolor for." }
+setnamecolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+setnamecolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+setnamecolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+setnamecolorid:defaultAccess( ULib.ACCESS_ADMIN )
+setnamecolorid:help( "Allows you to change the namecolor on the scoreboard for a specific player using their Steam ID." )
 
 function ulx.refreshranks( calling_ply )
     TTTSBRanksRefresh()
