@@ -40,7 +40,7 @@ local function TTTSBRanksRefresh( ply )
         net.WriteTable( TTTSBGroups )
         net.WriteTable( TTTSBNamecolors )
 
-        if ply then
+        if ply and IsValid( ply ) then
             net.Send( ply )
         else
             net.Broadcast()
@@ -112,10 +112,10 @@ function ulx.addranktext( calling_ply, target_ply, rank )
     local sid = target_ply:SteamID()
     TTTSBRanksRefresh()
 
-    if TTTSBRanks[ sid ].text then
+    if TTTSBRanks[ sid ] and TTTSBRanks[ sid ].text then
         ULib.tsayError( calling_ply, "This player already has a custom rank text." )
     else
-        TTTSBRanks[ sid ].text = rank
+        TTTSBRanks[ sid ] = { text = rank }
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
         ulx.fancyLogAdmin( calling_ply, "#A added the scoreboard rank text of #T to #s", target_ply, rank )
     end
@@ -132,12 +132,10 @@ function ulx.addrankcolor( calling_ply, target_ply, red, green, blue )
     TTTSBRanksRefresh()
 
     local sid = target_ply:SteamID()
-    if TTTSBRanks[ sid ].r then
+    if TTTSBRanks[ sid ] and TTTSBRanks[ sid ].color == "colors" then
         ULib.tsayError( calling_ply, "This player already has a colored rank." )
     else
-        TTTSBRanks[ sid ].r = red
-        TTTSBRanks[ sid ].b = green
-        TTTSBRanks[ sid ].g = blue
+        TTTSBRanks[ sid ] = { color = "colors", r = red, g = green, b = blue }
 
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
         ulx.fancyLogAdmin( calling_ply, "#A added the scoreboard rank color for #T to #i, #i, #i.", target_ply, red, green, blue )
@@ -151,7 +149,40 @@ addrankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint=
 addrankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
 addrankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
 addrankcolor:defaultAccess( ULib.ACCESS_ADMIN )
-addrankcolor:help( "Changes only the scoreboard rank color of a player's rank." )
+addrankcolor:help( "Adds scoreboard rank color of a player's rank." )
+
+function ulx.addrankcolorid( calling_ply, sid, red, green, blue )
+    TTTSBRanksRefresh()
+
+    if not ULib.isValidSteamID( sid ) then
+        if TTTSBRanks[ sid ].color or TTTSBRanks[ sid ].color == "colors" then
+            ULib.tsayError( calling_ply, "#s already has an existing colored rank.", sid )
+        else
+            local sidFormat = sid
+            local checkPly = ULib.getPlyByID( sid )
+
+            if checkPly then
+                sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
+            end
+
+            TTTSBRanks[ sid ] = { r = red, g = green, b = blue }
+
+            ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+            ulx.fancyLogAdmin( calling_ply, "#A added the scoreboard rank color for #s: #i, #i, #i.", sidFormat, red, green, blue )
+        end
+    else
+        ULib.tsayError( calling_ply, "Not a valid Steam ID." )
+    end
+
+    TTTSBRanksRefresh()
+end
+local addrankcolorid = ulx.command( CATEGORY_NAME, "ulx addrankcolorid", ulx.addrankcolorid, "!addrankcolorid" )
+addrankcolorid:addParam{ type=ULib.cmds.StringArg, hint="Steam ID of player" }
+addrankcolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+addrankcolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+addrankcolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+addrankcolorid:defaultAccess( ULib.ACCESS_ADMIN )
+addrankcolorid:help( "Adds scoreboard rank color of a player's rank using their Steam ID" )
 
 function ulx.rainbowrank( calling_ply, target_ply, rank )
     local sid = target_ply:SteamID()
@@ -203,12 +234,12 @@ function ulx.changerank( calling_ply, target_ply, rank, red, green, blue )
 
     TTTSBRanksRefresh()
 
-    if not TTTSBRanks[ sid ] then
-        ULib.tsayError( calling_ply, "That player does not have an existing rank." )
-    else
+    if TTTSBRanks[ sid ] then
         TTTSBRanks[ sid ] = { text = rank, color = "colors", r = red, g = green, b = blue }
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
         ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank of #T to #s with color: #i, #i, #i", target_ply, rank, red, green, blue )
+    else
+        ULib.tsayError( calling_ply, "That player does not have an existing rank." )
     end
 
     TTTSBRanksRefresh()
@@ -261,21 +292,21 @@ function ulx.changeranktext( calling_ply, target_ply, rank )
     TTTSBRanksRefresh()
 
     local sid = target_ply:SteamID()
-    if not TTTSBRanks[ sid ].text then
-        ULib.tsayError( calling_ply, "This player does not have a custom rank text." )
-    else
+    if TTTSBRanks[ sid ].text then
         local oldRank = TTTSBRanks[ sid ].text
         TTTSBRanks[ sid ].text = rank
 
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
         ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank text of #T from #s to #s", target_ply, oldRank, rank )
+    else
+        ULib.tsayError( calling_ply, "This player does not have a custom rank text." )
     end
 
     TTTSBRanksRefresh()
 end
 local changeranktext = ulx.command( CATEGORY_NAME, "ulx changeranktext", ulx.changeranktext, "!changeranktext" )
-changeranktext:addParam( type=ULib.cmds.PlayerArg )
-changeranktext:addParam( type=ULib.cmds.StringArg, hint="New rank of player" )
+changeranktext:addParam{ type=ULib.cmds.PlayerArg }
+changeranktext:addParam{ type=ULib.cmds.StringArg, hint="New rank of player" }
 changeranktext:defaultAccess( ULib.ACCESS_ADMIN )
 changeranktext:help( "Changes only the scoreboard rank text of a player's rank." )
 
@@ -283,7 +314,7 @@ function ulx.changerankcolor( calling_ply, target_ply, red, green, blue )
     TTTSBRanksRefresh()
 
     local sid = target_ply:SteamID()
-    if not TTTSBRanks[ sid ].r then
+    if not TTTSBRanks[ sid ].color or not TTTSBRanks[ sid ].color == "colors" then
         ULib.tsayError( calling_ply, "This player does not have an existing colored rank." )
     else
         local oldRed = TTTSBRanks[ sid ].r
@@ -305,7 +336,45 @@ changerankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hi
 changerankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
 changerankcolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
 changerankcolor:defaultAccess( ULib.ACCESS_ADMIN )
-changerankcolor:help( "Changes only the scoreboard rank color of a player's rank." )
+changerankcolor:help( "Changes only the scoreboard rank COLOR of a player's rank." )
+
+function ulx.changerankcolorid( calling_ply, sid, red, green, blue )
+    TTTSBRanksRefresh()
+
+    if ULib.isValidSteamID( sid ) then
+        if not TTTSBRanks[ sid ].color or not TTTSBRanks[ sid ].color == "colors" then
+            ULib.tsayError( calling_ply, "#s does not have an existing colored rank.", sid )
+        else
+            local sidFormat = sid
+            local checkPly = ULib.getPlyByID( sid )
+
+            if checkPly then
+                sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
+            end
+
+            local oldRed = TTTSBRanks[ sid ].r
+            local oldGreen = TTTSBRanks[ sid ].g
+            local oldBlue = TTTSBRanks[ sid ].b
+            TTTSBRanks[ sid ].r = red
+            TTTSBRanks[ sid ].b = green
+            TTTSBRanks[ sid ].g = blue
+
+            ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+            ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank color for #s from #i, #i, #i to #i, #i, #i.", sidFormat, oldRed, oldGreen, oldBlue, red, green, blue )
+        end
+    else
+        ULib.tsayError( calling_ply, "Not a valid Steam ID." )
+    end
+
+    TTTSBRanksRefresh()
+end
+local changerankcolorid = ulx.command( CATEGORY_NAME, "ulx changerankcolorid", ulx.changerankcolorid, "!changerankcolorid" )
+changerankcolorid:addParam{ type=ULib.cmds.StringArg, hint="Steam ID of player" }
+changerankcolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
+changerankcolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
+changerankcolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
+changerankcolorid:defaultAccess( ULib.ACCESS_ADMIN )
+changerankcolorid:help( "Changes only the scoreboard rank COLOR of a player's rank using their Steam ID." )
 
 function ulx.removerank( calling_ply, target_ply )
     local sid = target_ply:SteamID()
@@ -357,6 +426,106 @@ removerankid:addParam{ type=ULib.cmds.StringArg, hint="Steam ID for player" }
 removerankid:defaultAccess( ULib.ACCESS_ADMIN )
 removerankid:help( "Removes a scoreboard rank for a Steam ID" )
 
+function ulx.removeranktext( calling_ply, target_ply )
+    TTTSBRanksRefresh()
+
+    local sid = target_ply:SteamID()
+
+    if TTTSBRanks[ sid ] and TTTSBRanks[ sid ].text then
+        TTTSBRanks[ sid ].text = nil
+
+        ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+        ulx.fancyLogAdmin( calling_ply, "#A removed the scoreboard rank text of #T", target_ply )
+    else
+        ULib.tsayError( calling_ply, "This player does not have a scoreboard rank text." )
+    end
+
+    TTTSBRanksRefresh()
+end
+local removeranktext = ulx.command( CATEGORY_NAME, "ulx removeranktext", ulx.removeranktext, "!removeranktext" )
+removeranktext:addParam{ type=ULib.cmds.PlayerArg }
+removeranktext:defaultAccess( ULib.ACCESS_ADMIN )
+removeranktext:help( "Removes a player's scoreboard rank text." )
+
+function ulx.removeranktextid( calling_ply, sid )
+    TTTSBRanksRefresh()
+
+    if ULib.isValidSteamID( sid ) then
+        if TTTSBRanks[ sid ] and TTTSBRanks[ sid ].text then
+            TTTSBRanks[ sid ].text = nil
+
+            local sidFormat = sid
+            local checkPly = ULib.getPlyByID( sid )
+
+            if checkPly then
+                sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
+            end
+
+            ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+            ulx.fancyLogAdmin( calling_ply, "#A removed the scoreboard rank text of #s", sidFormat )
+        end
+    else
+        ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
+    end
+
+    TTTSBRanksRefresh()
+end
+
+function ulx.removerankcolor( calling_ply, target_ply )
+    TTTSBRanksRefresh()
+
+    local sid = target_ply:SteamID()
+
+    if TTTSBRanks[ sid ] and TTTSBRanks[ sid ].color then
+        TTTSBRanks[ sid ].color = nil
+        TTTSBRanks[ sid ].r = nil
+        TTTSBRanks[ sid ].g = nil
+        TTTSBRanks[ sid ].b = nil
+
+        ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+        ulx.fancyLogAdmin( target_ply, "#A removed the custom rank color of #T", target_ply )
+    else
+        ULib.tsayError( calling_ply, "This player does not have a custom rank color." )
+    end
+
+    TTTSBRanksRefresh()
+end
+local removerankcolor = ulx.command( CATEGORY_NAME, "ulx removerankcolor", ulx.removerankcolor, "!removerankcolor" )
+removerankcolor:addParam{ type=ULib.cmds.PlayerArg }
+removerankcolor:defaultAccess( ULib.ACCESS_ADMIN )
+removerankcolor:help( "Removes a player's scoreboard rank color." )
+
+function ulx.removerankcolorid( calling_ply, sid )
+    TTTSBRanksRefresh()
+
+    if ULib.isValidSteamID( sid ) then
+        if TTTSBRanks[ sid ] and TTTSBRanks[ sid ].color then
+            TTTSBRanks[ sid ].color = nil
+            TTTSBRanks[ sid ].r = nil
+            TTTSBRanks[ sid ].g = nil
+            TTTSBRanks[ sid ].b = nil
+
+            local sidFormat = sid
+            local checkPly = ULib.getPlyByID( sid )
+
+            if checkPly then
+                sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
+            end
+
+            ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
+            ulx.fancyLogAdmin( target_ply, "#A removed the custom rank color of #s", sidFormat )
+        end
+    else
+        ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
+    end
+
+    TTTSBRanksRefresh()
+end
+local removerankcolorid = ulx.command( CATEGORY_NAME, "ulx removerankcolorid", ulx.removerankcolorid, "!removerankcolorid" )
+removerankcolorid:addParam{ type=ULib.cmds.StringArg, hint="Steam ID for player" }
+removerankcolorid:defaultAccess( ULib.ACCESS_ADMIN )
+removerankcolorid:help( "Removes a player's scoreboard rank color using their Steam ID." )
+
 function ulx.columnname( calling_ply, name )
     TTTSBRanksRefresh()
 
@@ -397,7 +566,7 @@ function ulx.defaultcolor( calling_ply, red, green, blue )
         [ "g" ] = green,
         [ "b" ] = blue
     }
-    ULIb.fileWrite( dir .. settings, util.TableToJSON( TTTSBSettings ) )
+    ULib.fileWrite( dir .. settings, util.TableToJSON( TTTSBSettings ) )
     ulx.fancyLogAdmin( calling_ply, true, "#A changed the default rank color to: #i, #i, #i", red, green, blue )
 end
 local defaultcolor = ulx.command( CATEGORY_NAME, "ulx defaultcolor", ulx.defaultcolor, "!defaultcolor", true )
@@ -496,7 +665,7 @@ function ulx.setnamecolor( calling_ply, target_ply, red, green, blue )
     TTTSBRanksRefresh()
 end
 local setnamecolor = ulx.command( CATEGORY_NAME, "ulx setnamecolor", ulx.setnamecolor, "!setnamecolor" )
-setnamecolor:addParam{ type=ULib.cmds.PlayerArg, hint="Player to edit namecolor for." }
+setnamecolor:addParam{ type=ULib.cmds.PlayerArg }
 setnamecolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
 setnamecolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
 setnamecolor:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }
@@ -517,7 +686,7 @@ function ulx.setnamecolorid( calling_ply, sid, red, green, blue )
     TTTSBRanksRefresh()
 end
 local setnamecolorid = ulx.command( CATEGORY_NAME, "ulx setnamecolorid", ulx.setnamecolorid, "!setnamecolorid" )
-setnamecolorid:addParam{ type=ULib.cmds.PlayerArg, hint="Player to edit namecolor for." }
+setnamecolorid:addParam{ type=ULib.cmds.StringArg, hint="Steam ID for player" }
 setnamecolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Red part of RGB" }
 setnamecolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Green part of RGB" }
 setnamecolorid:addParam{ type=ULib.cmds.NumArg, min=0, max=255, default=255, hint="Blue part of RGB" }

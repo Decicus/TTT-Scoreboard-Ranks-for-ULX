@@ -60,12 +60,12 @@ end
 hook.Add( "TTTScoreboardColumns", "TTTSBRanksDisplay", TTTSBRanksDisplay )
 
 function TTTSBNamecolorsDisplay( ply )
-    local defColors = settings[ "default_namecolor" ]
+    local defColors = TTTSBSettings[ "default_namecolor" ]
     if TTTSBNamecolors[ ply:SteamID() ] then
         local colors = TTTSBNamecolors[ ply:SteamID() ]
         return Color( colors.r, colors.g, colors.b )
     else
-        Color( defColors.r, defColors.g, defColors.b ) or nil
+        return Color( defColors.r, defColors.g, defColors.b ) or nil
     end
 end
 hook.Add( "TTTScoreboardColorForPlayer", "TTTSBNamecolorsDisplay", TTTSBNamecolorsDisplay )
