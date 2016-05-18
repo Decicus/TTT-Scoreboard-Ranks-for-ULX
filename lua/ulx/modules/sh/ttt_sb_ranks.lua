@@ -43,6 +43,11 @@ local function TTTSBRanksRefresh( ply )
 end
 hook.Add( "PlayerInitialSpawn", "ULXTTTRefresh_PlayerJoin", TTTSBRanksRefresh )
 
+-- Hotfix
+hook.Add( "PlayerSpawn", "ULXTTTRefresh_PlayerSpawn", function()
+    TTTSBRanksRefresh()
+end )
+
 function ulx.addrank( calling_ply, target_ply, rank, red, green, blue )
 
     local sid = target_ply:SteamID()
@@ -68,44 +73,44 @@ addrank:defaultAccess( ULib.ACCESS_ADMIN )
 addrank:help( "Adds a custom scoreboard rank for a connected player with RGB colorcodes." )
 
 function ulx.addrankid( calling_ply, sid, rank, red, green, blue )
-    
+
     TTTSBRanksRefresh()
-    
+
     if ULib.isValidSteamID( sid ) then
-    
+
         if TTTSBRanks[ sid ] then
-        
+
             ULib.tsayError( calling_ply, "This Steam ID already has a rank. Please use 'changerankid' to modify a rank using a Steam ID." )
-        
+
         else
-        
+
             local sidRank = { text = rank, color = "colors", r = red, g = green, b = blue }
-            
+
             TTTSBRanks[ sid ] = sidRank
-            
+
             ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-            
+
             local sidFormat = sid
             local checkPly = ULib.getPlyByID( sid )
-            
+
             if checkPly then
-            
+
                 sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
-                
+
             end
-            
+
             ulx.fancyLogAdmin( calling_ply, "#A set the scoreboard rank of #s to #s with color: #i, #i, #i", sidFormat, rank, red, green, blue )
-        
+
         end
-    
+
     else
-        
+
         ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
-        
+
     end
-    
+
     TTTSBRanksRefresh()
-    
+
 end
 local addrankid = ulx.command( CATEGORY_NAME, "ulx addrankid", ulx.addrankid, "!addrankid" )
 addrankid:addParam{ type=ULib.cmds.StringArg, hint="Steam ID of player" }
@@ -139,29 +144,29 @@ rainbowrank:help( "Adds or changes a custom scoreboard rank's color to a rainbow
 function ulx.rainbowrankid( calling_ply, sid, rank )
 
     TTTSBRanksRefresh()
-    
+
     if ULib.isValidSteamID( sid ) then
-    
+
         TTTSBRanks[ sid ] = { text = rank, color = "rainbow", r = 0, g = 0, b = 0 }
         ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-        
+
         local sidFormat = sid
         local checkPly = ULib.getPlyByID( sid )
-        
+
         if checkPly then
-        
+
             sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
-            
+
         end
 
         ulx.fancyLogAdmin( calling_ply, "#A set the scoreboard rank of #s to #s with rainbow colors.", sidFormat, rank )
-        
+
     else
-    
+
         ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
-    
+
     end
-    
+
     TTTSBRanksRefresh()
 
 end
@@ -204,7 +209,7 @@ changerank:help( "Changes an existing scoreboard rank to different text and colo
 function ulx.changerankid( calling_ply, sid, rank, red, green, blue )
 
     TTTSBRanksRefresh()
-    
+
     if ULib.isValidSteamID( sid ) then
 
         if not TTTSBRanks[ sid ] then
@@ -215,26 +220,26 @@ function ulx.changerankid( calling_ply, sid, rank, red, green, blue )
 
             TTTSBRanks[ sid ] = { text = rank, color = "colors", r = red, g = green, b = blue }
             ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-            
+
             local sidFormat = sid
             local checkPly = ULib.getPlyByID( sid )
-            
+
             if checkPly then
-            
+
                 sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
-                
+
             end
-            
+
             ulx.fancyLogAdmin( calling_ply, "#A changed the scoreboard rank of #s to #s with color: #i, #i, #i", sidFormat, rank, red, green, blue )
 
         end
-        
+
     else
-    
+
         ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
-        
+
     end
-    
+
     TTTSBRanksRefresh()
 
 end
@@ -276,7 +281,7 @@ removerank:help( "Removes a players scoreboard rank." )
 function ulx.removerankid( calling_ply, sid )
 
     TTTSBRanksRefresh()
-    
+
     if ULib.isValidSteamID( sid ) then
 
         if not TTTSBRanks[ sid ] then
@@ -287,26 +292,26 @@ function ulx.removerankid( calling_ply, sid )
 
             TTTSBRanks[ sid ] = nil
             ULib.fileWrite( dir .. ranks, util.TableToJSON( TTTSBRanks ) )
-            
+
             local sidFormat = sid
             local checkPly = ULib.getPlyByID( sid )
-            
+
             if checkPly then
-            
+
                 sidFormat = checkPly:Nick() .. " (" .. sid .. ")"
-                
+
             end
-            
+
             ulx.fancyLogAdmin( calling_ply, "#A removed the scoreboard rank of #s", sidFormat )
 
         end
-        
+
     else
-        
+
         ULib.tsayError( calling_ply, "This is not a valid Steam ID." )
-    
+
     end
-    
+
     TTTSBRanksRefresh()
 
 end
