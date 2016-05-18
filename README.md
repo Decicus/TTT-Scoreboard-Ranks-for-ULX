@@ -22,8 +22,10 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 - Superadmins:
     - Changing the default rank, column width and column name.
     - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
-    
+
 ##Changelog:
+- Version 1.1.1
+    - Hotfixes a scoreboard issue with missing MIA and CD players.
 - Version 1.1
     - Added the ability to add, modify, remove and "rainbow" someones rank using their [Steam ID](https://developer.valvesoftware.com/wiki/SteamID#Legacy_Format)
 - Version 1.0
