@@ -26,7 +26,7 @@ local function rainbow()
 end
 
 function TTTSBRanksDisplay(panel)
-	panel:AddColumn(TTTSBSettings["column_name"], function(ply, label)
+	panel:AddColumn(TTTSBSettings["column_name"] or "", function(ply, label)
 		local plyR = TTTSBRanks[ply:SteamID()]
 		local groupR = TTTSBGroups[ply:GetUserGroup()]
 
@@ -51,6 +51,6 @@ function TTTSBRanksDisplay(panel)
 
 			return TTTSBSettings["default_rank"]
 		end
-	end, TTTSBSettings["column_width"])
+	end, TTTSBSettings["column_width"] or 80)
 end
 hook.Add("TTTScoreboardColumns", "TTTSBRanksDisplay", TTTSBRanksDisplay)
