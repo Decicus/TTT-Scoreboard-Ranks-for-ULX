@@ -35,7 +35,7 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 
 ## Notes:
 - Custom, per-user ranks will override group ranks.
-- Other information can be found via the Ulysses Forums: [http://forums.ulyssesmod.net/index.php/topic,8607.0.html](http://forums.ulyssesmod.net/index.php/topic,8607.0.html)
+- Other information can be found via the Ulysses Forums: [https://forums.ulyssesmod.net/index.php/topic,8607.0.html](http://forums.ulyssesmod.net/index.php/topic,8607.0.html)
 
 ## Installation:
 - For the latest, stable release; Click ["Releases"](https://github.com/Decicus/TTT-Scoreboard-Ranks-for-ULX/releases) and find the latest available version.
@@ -45,5 +45,5 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 - Restart the server.
 
 ## Requirements:
-- [ULX & ULib](http://ulyssesmod.net/)
+- [ULX & ULib](https://ulyssesmod.net/)
 - Trouble in Terrorist Town version [2014-03-09](http://ttt.badking.net/releases/2014-03-09) or newer (basically if you have updated your server after March 2014).

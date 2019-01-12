@@ -5,7 +5,7 @@
     "up_date"            "2016-05-18"
     "author_name"            "Alex (Decicus) Thomassen"
     "author_email"            "alex@thomassen.xyz"
-    "author_url"            "https://www.thomassen.xyz/"
+    "author_url"            "https://thomassen.sh/"
     "info"                "Gamemode commands"
     "override"          "0"
 }
