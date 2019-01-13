@@ -8,13 +8,14 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 ## Current features:
 - Allows you to add, change existing, remove ranks and customize color.
 - Allows you to add or change an existing rank to use "rainbow" colors. This will gradually change colors.
-- Changing the default rank and color of this rank.
+- Changing the default rank and color of the default rank.
 - Changing column width.
 - Changing column name.
 - Support for setting group ranks.
 
 ## Planned features:
-- None as of yet (Suggestions?).
+- A complete rewrite for cleaning up code and improving overall performance.
+    - No ETA.
 
 ## Current permissions:
 - Admins:
@@ -37,13 +38,13 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 
 ## Notes:
 - Custom, per-user ranks will override group ranks.
-- Other information can be found via the Ulysses Forums: [https://forums.ulyssesmod.net/index.php/topic,8607.0.html](http://forums.ulyssesmod.net/index.php/topic,8607.0.html)
+- Other information can be found via the Ulysses Forums: [https://forums.ulyssesmod.net/index.php/topic,8607.0.html](https://forums.ulyssesmod.net/index.php/topic,8607.0.html)
 
 ## Installation:
 - For the latest, stable release; Click ["Releases"](https://github.com/Decicus/TTT-Scoreboard-Ranks-for-ULX/releases) and find the latest available version.
 - Download the zip or tar.gz file and extract it. There should be a folder called "TTT-Scoreboard-Ranks-for-ULX" and inside that should be some files.
 - Put this folder inside your "garrysmod/addons" on the server, either locally or via FTP (depending on how it is hosted).
-    - If you are hosting on Linux, you will most likely have to rename the addon folder to something lowercase (such as "scoreboard_ranks", for example) as uppercase-named addons cause issues with Garry's Mod.
+    - If you are hosting on Linux, you will most likely have to rename the addon folder to something lowercase (such as `ttt_scoreboard_ranks`, for example) as uppercase-named addons cause issues with Garry's Mod on Linux.
 - Restart the server.
 
 ## Requirements:
