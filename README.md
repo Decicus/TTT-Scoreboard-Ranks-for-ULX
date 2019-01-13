@@ -8,7 +8,7 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 ## Current features:
 - Allows you to add, change existing, remove ranks and customize color.
 - Allows you to add or change an existing rank to use "rainbow" colors. This will gradually change colors.
-- Changing the default rank.
+- Changing the default rank and color of this rank.
 - Changing column width.
 - Changing column name.
 - Support for setting group ranks.
@@ -24,6 +24,8 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
     - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
 
 ## Changelog:
+- Version 1.2.0
+    - Adds `ulx defaultcolor`, which adjusts the color of the default rank.
 - Version 1.1.1
     - Hotfixes a scoreboard issue with missing MIA and CD players.
 - Version 1.1

@@ -323,7 +323,6 @@ function ulx.defaultcolor(calling_ply, red, green, blue)
     TTTSBRanksRefresh()
 end
 local defaultcolor = ulx.command(CATEGORY_NAME, "ulx defaultcolor", ulx.defaultcolor, "!defaultcolor", true)
-defaultcolor:addParam{type = ULib.cmds.StringArg, hint = "Steam ID for player"}
 defaultcolor:addParam{type = ULib.cmds.NumArg, min = 0, max = 255, default = 255, hint = "Red part of RGB"}
 defaultcolor:addParam{type = ULib.cmds.NumArg, min = 0, max = 255, default = 255, hint = "Green part of RGB"}
 defaultcolor:addParam{type = ULib.cmds.NumArg, min = 0, max = 255, default = 255, hint = "Blue part of RGB"}
