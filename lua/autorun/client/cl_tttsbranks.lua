@@ -47,7 +47,14 @@ function TTTSBRanksDisplay(panel)
 
             return groupR.text
         else
-            label:SetTextColor(Color(255, 255, 255))
+            local defColor = TTTSBSettings["default_color"]
+            local labelColor = Color(255, 255, 255)
+
+            if defColor ~= nil then
+                labelColor = Color(defColor.red or 255, defColor.green or 255, defColor.blue or 255)
+            end
+
+            label:SetTextColor(labelColor)
 
             return TTTSBSettings["default_rank"]
         end

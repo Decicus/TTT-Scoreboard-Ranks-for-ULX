@@ -312,6 +312,24 @@ defaultrank:addParam{type = ULib.cmds.StringArg, hint = "Default rank for player
 defaultrank:defaultAccess(ULib.ACCESS_SUPERADMIN)
 defaultrank:help("Changes the default rank for players without a custom rank.")
 
+function ulx.defaultcolor(calling_ply, red, green, blue)
+    TTTSBRanksRefresh()
+
+    TTTSBSettings["default_color"] = {red = red, green = green, blue = blue}
+
+    ULib.fileWrite(dir .. settings, util.TableToJSON(TTTSBSettings))
+    ulx.fancyLogAdmin(calling_ply, true, "#A changed the color of the default rank to color: #i, #i, #i", red, green, blue)
+
+    TTTSBRanksRefresh()
+end
+local defaultcolor = ulx.command(CATEGORY_NAME, "ulx defaultcolor", ulx.defaultcolor, "!defaultcolor", true)
+defaultcolor:addParam{type = ULib.cmds.StringArg, hint = "Steam ID for player"}
+defaultcolor:addParam{type = ULib.cmds.NumArg, min = 0, max = 255, default = 255, hint = "Red part of RGB"}
+defaultcolor:addParam{type = ULib.cmds.NumArg, min = 0, max = 255, default = 255, hint = "Green part of RGB"}
+defaultcolor:addParam{type = ULib.cmds.NumArg, min = 0, max = 255, default = 255, hint = "Blue part of RGB"}
+defaultcolor:defaultAccess(ULib.ACCESS_ADMIN)
+defaultcolor:help("Sets the color of the default rank. Default is 255, 255, 255 (white)")
+
 function ulx.columnwidth(calling_ply, width)
     TTTSBRanksRefresh()
 
