@@ -1,23 +1,27 @@
 # TTT Scoreboard Ranks for ULX
 
 ## What does this do?
-It's an easier way of adding custom ranks to the scoreboard in TTT.  
+
+It's an easier way of adding custom "ranks" to the scoreboard in TTT.  
 It allows you to change what it says at the top, set one rank and color for a group or make the text show rainbow colors.  
 TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 
 ## Current features:
+
 - Allows you to add, change existing, remove ranks and customize color.
-- Allows you to add or change an existing rank to use "rainbow" colors. This will gradually change colors.
+- Allows you to add or change an existing rank to use "rainbow" colors. This will cycle through colors constantly, in a "rainbow effect".
 - Changing the default rank and color of the default rank.
 - Changing column width.
 - Changing column name.
 - Support for setting group ranks.
+    - Group ranks are only shown if the player does not have a custom rank specifically for them.
 
 ## Planned features:
-- A complete rewrite for cleaning up code and improving overall performance.
-    - No ETA.
+- ~~A complete rewrite for cleaning up code and improving overall performance.~~
+    - Done in `32905c9c6c4d0effc69027a5b32a085e5f457b9f` I guess
 
 ## Current permissions:
+
 - Admins:
     - Adding, changing and removing ranks (colors + rainbows) using player names and Steam ID.
 - Superadmins:
@@ -25,6 +29,16 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
     - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
 
 ## Changelog:
+
+- Version 2.0.0
+    - Major refactor of the entire addon functionality should remain exactly the same.
+        - In other words: Cleaning up the code structure.
+    - Minor performance improvements in the way changes to ranks are sent to players connected to the server.
+        - Instead of sending the complete dataset to all players every time a change is made, it now only sends the specific change to all players instead.
+    - Added a new client console variable: `tttsbranks_debug` which will print debug information to the console whenever rank/settings updates are sent to players.
+        - This is mainly for development purposes, but can be useful for server owners as well, I guess.
+        - `tttsbranks_debug 0` to disable (default).
+        - `tttsbranks_debug 1` to enable.
 - Version 1.2.0
     - Adds `ulx defaultcolor`, which adjusts the color of the default rank.
 - Version 1.1.1
@@ -37,16 +51,20 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
     - Added the ability to add, modify, remove and "rainbow" ranks for groups.
 
 ## Notes:
+
 - Custom, per-user ranks will override group ranks.
 - Other information can be found via the Ulysses Forums: [https://forums.ulyssesmod.net/index.php/topic,8607.0.html](https://forums.ulyssesmod.net/index.php/topic,8607.0.html)
 
 ## Installation:
+
 - For the latest, stable release; Click ["Releases"](https://github.com/Decicus/TTT-Scoreboard-Ranks-for-ULX/releases) and find the latest available version.
 - Download the zip or tar.gz file and extract it. There should be a folder called "TTT-Scoreboard-Ranks-for-ULX" and inside that should be some files.
 - Put this folder inside your "garrysmod/addons" on the server, either locally or via FTP (depending on how it is hosted).
     - If you are hosting on Linux, you will most likely have to rename the addon folder to something lowercase (such as `ttt-sb-ranks`, for example) as uppercase-named addons cause issues with Garry's Mod on Linux.
-- Restart the server.
+- Change the map or restart the server.
 
 ## Requirements:
+
 - [ULX & ULib](https://ulyssesmod.net/)
-- Trouble in Terrorist Town version [2014-03-09](http://ttt.badking.net/releases/2014-03-09) or newer (basically if you have updated your server after March 2014).
+- Your server needs to be running Trouble in Terrorist Town (aka TTT). It should also be compatible with TTT2, but I haven't personally tested it.
+    - Worst case, v1.2.0 should still be compatible with TTT2.
