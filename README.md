@@ -18,7 +18,7 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 
 ## Planned features:
 - ~~A complete rewrite for cleaning up code and improving overall performance.~~
-    - Done in 32905c9c6c4d0effc69027a5b32a085e5f457b9f I guess
+    - Done in [32905c9](https://github.com/Decicus/TTT-Scoreboard-Ranks-for-ULX/commit/32905c9c6c4d0effc69027a5b32a085e5f457b9f) I guess
 
 ## Default permissions:
 
