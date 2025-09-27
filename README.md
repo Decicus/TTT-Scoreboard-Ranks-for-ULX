@@ -18,15 +18,25 @@ TTT Scoreboard Ranks will often be abbreviated as "TTT SB Ranks".
 
 ## Planned features:
 - ~~A complete rewrite for cleaning up code and improving overall performance.~~
-    - Done in `32905c9c6c4d0effc69027a5b32a085e5f457b9f` I guess
+    - Done in 32905c9c6c4d0effc69027a5b32a085e5f457b9f I guess
 
-## Current permissions:
+## Default permissions:
+
+These permissions can be changed by superadmins via ULX's XGUI (`!menu`) or using the `ulx groupallow` / `ulx groupdeny` commands (I recommend the former).
 
 - Admins:
     - Adding, changing and removing ranks (colors + rainbows) using player names and Steam ID.
+        - `addrank`, `addrankid`, `changerank`, `changerankid`, `removerank`, `removerankid`, `rainbowrank` & `rainbowrankid` respectively.
+        - Note that `addrankid` and `removerankid` can technically target any Steam ID (including the ones linked to superadmin users). If you don't trust your admins to not abuse this, you should consider removing this permission from them... though I'd probably argue that they shouldn't be admins to begin with if you don't trust them.
 - Superadmins:
-    - Changing the default rank, column width and column name.
-    - Adding, changing (via addgrouprank) and removing group ranks (colors + rainbows).
+    - All permission granted to admins.
+    - Changing the default rank + color, column width and column name displayed on the scoreboard.
+        - `defaultrank`, `defaultcolor`, `columnwidth` & `columnname` respectively.
+    - Adding, changing and removing group ranks (colors + rainbows).
+        - `addgrouprank`, `removegrouprank` & `rainbowgrouprank` respectively.
+    - Forcing a complete rank update to all players connected to the server.
+        - `refreshranks` - This command will _load data from the data files_ and then send the complete dataset to all players connected to the server.
+            - Note that if the data files have been modified manually while the server is running. Though, unless you know exactly what you're doing, I'd refrain from editing them manually at all.
 
 ## Changelog:
 
