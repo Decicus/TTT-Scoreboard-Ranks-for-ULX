@@ -1,5 +1,13 @@
 hook.Add("Initialize", "ULX_TTTSBRanks_Initialize", function()
+    -- Update all data, typically only sent when they first load into the map.
     util.AddNetworkString("ULX_TTTSBRanks")
+
+    -- Update a single player, typically sent when their rank changes.
+    util.AddNetworkString("ULX_TTTSBRanks_UpdatePlayer")
+    -- Update settings, typically sent when settings change.
+    util.AddNetworkString("ULX_TTTSBRanks_UpdateSettings")
+    -- Update groups, typically sent when groups change.
+    util.AddNetworkString("ULX_TTTSBRanks_UpdateGroups")
 end)
 
 -- Fill in placeholders after ULX has loaded.
